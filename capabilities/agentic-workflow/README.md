@@ -14,7 +14,7 @@ Spec-driven **Architect → Builder → Reviewer** pipeline. The Architect write
 2. **Builder** implements strictly against the approved spec via Red→Green→Refactor TDD, and cannot start until the spec is `Approved`.
 3. **Reviewer-internal** runs Pass 1 (binary mechanical checks: tests, lint, signatures match spec, ACs covered) then Pass 2 (6 parallel lens subagents — Correctness, Security, Reliability, Design, Performance, Readability), cross-checks findings, and issues a verdict (`SHIP IT` / `NEEDS WORK` / `BLOCKER`).
 
-Full pipeline diagram, task-complexity paths (simple/medium/complex), and spec lifecycle: see [AGENTIC-WORKFLOW.md](../../AGENTIC-WORKFLOW.md).
+Full pipeline diagram, task-complexity paths (simple/medium/complex), and spec lifecycle: see [AGENTIC-WORKFLOW.md](AGENTIC-WORKFLOW.md).
 
 ## Install
 

@@ -208,7 +208,7 @@ Both are populated by their respective skills and preserved across iterations.
 ./install.sh github-ops   # or: ./install.sh gitlab-ops
 ```
 
-Then copy [templates/CLAUDE.md.template](templates/CLAUDE.md.template) into your project as `CLAUDE.md` — the agents read it at Step 0 for global rules and project conventions.
+Then copy [templates/CLAUDE.md.template](../../templates/CLAUDE.md.template) into your project as `CLAUDE.md` — the agents read it at Step 0 for global rules and project conventions.
 
 **Verify:** `@architect say hello` should load the architect persona and run its Step 0 (read CLAUDE.md, etc.). If it errors about a missing skill, re-run `./install.sh agentic-workflow`.
 
