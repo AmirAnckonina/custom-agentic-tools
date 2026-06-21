@@ -191,26 +191,8 @@ Your job is to break the code, not confirm it works. The author already believes
 4. Cross-reference findings against the Spec Contract sections above — flag deviations.
 5. Return findings in the format below.
 
-## Output Format
-
-IMPORTANT: Use actual Unicode emoji characters (🔴 🟡 🔵 🟢), NOT markdown shortcodes.
-
-### Findings
-
-🔴 CRITICAL — [file:line] — [what's wrong] — [why it matters]
-🟡 IMPORTANT — [file:line] — [description] — [impact]
-🔵 SUGGESTION — [file:line] — [description]
-🟢 POSITIVE — [file:area] — [what's good]
-
-### Summary
-[2-3 sentences: overall assessment from this lens's perspective]
-
-## Boundaries
-- READ ONLY. Do not modify any files.
-- Do not run git lifecycle commands (commit, push, merge, rebase).
-- Do not run glab commands.
-- Do not interact with the user — return findings only.
-- Minimize tool calls — code is pre-read for you. Only read additional files for surrounding context.
+## Output Format & Boundaries
+Use the exact Findings/Summary format and the Boundaries list from the **review-lenses** skill's "Subagent Output Format" and "Subagent Configuration" sections.
 ```
 
 #### Lens → Spec Section Mapping
@@ -224,19 +206,7 @@ IMPORTANT: Use actual Unicode emoji characters (🔴 🟡 🔵 🟢), NOT markdo
 | 5 | Performance & Testing | `perf-testing-lens.md` | Constraints, Acceptance Criteria | SRC + TEST |
 | 6 | Readability & Conventions | `readability-lens.md` | *(none — general quality only)* | SRC |
 
-#### Subagent Configuration
-
-- **subagent_type:** `general-purpose`
-- **model:** `{LENS_MODEL}` (Sonnet by default, Opus if `--deep`)
-- **maxTurns:** 6 per subagent (code is pre-read — lenses need minimal tool calls)
-
-#### Failure Handling
-
-If a subagent fails or returns empty:
-1. Retry once with the same prompt.
-2. If still fails → mark `❌ NOT REVIEWED` in Lens Coverage table.
-3. Flag that lens's principles as coverage gaps.
-4. Never silently skip — the user must know what wasn't reviewed.
+Subagent configuration (subagent_type, maxTurns, retry/failure handling) follows the **review-lenses** skill's "Subagent Configuration" and "Failure Handling" sections exactly. `{LENS_MODEL}` is the only override (computed in Step 0 from the `--deep` flag).
 
 ---
 
@@ -344,7 +314,7 @@ Use **review-lenses** verdict rules, with the addition that any Pass 1 failure =
 **Total:** 1× Opus (parent) + 6× {LENS_MODEL} (lenses) · [N] total tool calls
 
 ### Activity Summary
-> [e.g., "Pre-read 12 changed files. Pass 1: tests ✅, lint ✅, 6/6 signatures match, 8/8 ACs covered. Launched 6 Sonnet lenses. Collected 14 findings, deduplicated to 11. Cross-checked 5 pairs. Mapped to 13-principle scorecard."]
+> [e.g., "Pre-read 12 changed files. Pass 1: tests ✅, lint ✅, 6/6 signatures match, 8/8 ACs covered. Launched 6 Sonnet lenses. Collected 14 findings, deduplicated to 11. Cross-checked 5 pairs. Built 6-lens coverage table."]
 ```
 
 ---

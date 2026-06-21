@@ -31,10 +31,10 @@ Use the Task tool to invoke the **reviewer-internal** agent:
 After the reviewer completes, relay the **complete review report verbatim** to the user. This MUST include ALL of the following — do NOT summarize or omit any section:
 1. TL;DR and Verdict
 2. Findings Summary (counts by severity)
-3. The full **Principle Scorecard table** (all 13 rows)
+3. The full **Lens Coverage table** (all 6 rows)
 4. Critical & Important findings with details
 
-Do NOT convert the scorecard table into narrative text. Reproduce it as a markdown table exactly as the reviewer produced it.
+Do NOT convert the Lens Coverage table into narrative text. Reproduce it as a markdown table exactly as the reviewer produced it.
 
 ### Step 3: Post-Review Actions (MANDATORY)
 Based on the reviewer's verdict, present these options to the user:
