@@ -1,0 +1,48 @@
+# CLAUDE.md — Project Rules
+
+Copy this into a project's `.claude/CLAUDE.md` (or repo-root `CLAUDE.md`) and fill in the placeholders. The agents/skills in this stack expect these sections to exist.
+
+---
+
+## GLOBAL RULES (Apply to ALL modes: direct chat, architect, builder, reviewer)
+
+### Communication
+- **Strict Brevity:** Technical, concise language. No filler phrases, no "I understand" preambles.
+- **Top-Down Reporting:** Always lead with TL;DR / high-level summary. Break down details only when asked.
+- **Smart Referencing:** Use `@filename` pattern to locate files. Do not scan entire directories unless a file cannot be found.
+
+### Planning
+- **Planning-First:** Before any non-trivial work, present a short plan or outline. Wait for approval before executing.
+
+### Coding Standards
+- **Detailed standards** are defined in the `coding-standards` skill (`.claude/skills/coding-standards/SKILL.md`).
+  - **Agents:** Loaded automatically via frontmatter (Builder).
+  - **Direct chat:** Load this skill before producing any implementation code.
+- **Code Safety:** Never handle secrets or passwords insecurely. Warn on security implications. Use safe, modern APIs (parameterized queries, HTTPS).
+- **Respect Conventions:** Follow existing naming, file structures, and architecture. Flag any deviation.
+
+### Project Conventions
+- **Branch Naming:** `<your-convention-here>` (e.g. `feature/TICKET-123-short-description`)
+- **Commit Messages:** Free-form but descriptive. Explain *what* and *why*.
+
+### Service Catalog (optional)
+- If you maintain a service catalog (`service-context.yaml` per repo, see the `generate-service-context` skill), point at it here: `~/repositories/<your-catalog-dir>/`.
+
+---
+
+## DIRECT CHAT RULES (Apply when NO agent is active — just you and me talking)
+
+### Execution & Permission
+- **Ask Before Acting:** Require explicit approval before reading many files, starting implementation, or running multiple automated fix iterations — tune this to taste.
+
+### Interactive Workflow
+- **No Monolithic Responses:** Never dump multi-part answers in one message for complex multi-step work.
+- **Structure First:** For multi-component tasks, present a numbered outline first.
+
+---
+
+## AGENT MODE
+
+When a custom agent (Architect, Builder, Reviewer) is active, the agent's own protocol is the **primary authority**. Direct Chat rules do NOT apply — the agent follows its own workflow.
+
+**Global Rules and Project Conventions always apply**, regardless of mode.
