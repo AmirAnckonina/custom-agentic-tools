@@ -1,6 +1,6 @@
 # custom-agentic-tools
 
-Personal stack of Claude Code agents, skills, and commands — generalized from a previous employer's setup and stripped of any company-specific content.
+Personal stack of Claude Code agents, skills, and commands, organized as independently-installable capabilities.
 
 ## Layout
 
@@ -44,10 +44,6 @@ Each row is one `./install.sh <capability>`. Depth lives in each skill's own `SK
 | `slack-comms` | Structured Slack messages — channel requests (DM-reviewed) & daily updates | Slack MCP (+`atlassian` optional) | [capabilities/slack-comms](capabilities/slack-comms/README.md) |
 | `service-ops` | Per-repo `service-context.yaml` catalog + tag-vs-deployed drift report | a git-host capability; drift needs a `service-map` you write | [capabilities/service-ops](capabilities/service-ops/README.md) |
 | `skill-authoring` | Meta-skill for authoring new skills | — | [capabilities/skill-authoring](capabilities/skill-authoring/README.md) |
-
-## Provenance
-
-These were originally built for and used at a previous employer. Everything in this repo has been reviewed and rewritten to remove company names, internal repo paths, real infrastructure hostnames, project/channel IDs, and similar identifying details. `generate-service-context` and `version-drift-tracker` keep the *mechanism* but require you to supply your own config/conventions on first use.
 
 ## License
 
