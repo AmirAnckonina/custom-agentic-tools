@@ -48,3 +48,7 @@ Each row is one `./install.sh <capability>`. Depth lives in each skill's own `SK
 ## Provenance
 
 These were originally built for and used at a previous employer. Everything in this repo has been reviewed and rewritten to remove company names, internal repo paths, real infrastructure hostnames, project/channel IDs, and similar identifying details. `generate-service-context` and `version-drift-tracker` keep the *mechanism* but require you to supply your own config/conventions on first use.
+
+## License
+
+[MIT](LICENSE)
