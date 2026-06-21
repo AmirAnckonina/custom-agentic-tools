@@ -1,0 +1,4 @@
+# desc: Per-repo service-context catalog + tag-vs-deployed version-drift tracking
+# requires: a git-host bundle; version-drift-tracker also needs a service-map you write
+skills/generate-service-context
+skills/version-drift-tracker

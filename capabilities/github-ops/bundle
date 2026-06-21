@@ -1,0 +1,3 @@
+# desc: PR & CI operations via the GitHub `gh` CLI
+# requires: gh CLI + `gh auth login`
+skills/gh-ops

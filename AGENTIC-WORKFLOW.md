@@ -11,9 +11,8 @@ The core workflow this stack is built around: a spec-driven **Architect → Buil
 | `spec-reviewer` | Skill | Opus subagents (5 parallel) | `/spec-review` (after CTO passes or is skipped) |
 | `builder` | Agent | Sonnet | `@builder [spec path or task]` |
 | `reviewer-internal` | Agent | Sonnet | `@reviewer-internal` or `/review-internal` |
-| `deep-reviewer` | Agent | Opus | `@deep-reviewer` or `/review-mr [number]` |
 
-Shared skills: `spec-format` (the contract Architect writes against and Builder/reviewers read), `architect-methodology` (5 reasoning lenses + research protocol), `coding-standards` (13 quality standards), `build-report` (Builder's output format), `review-lenses` (the 6-lens review mechanism both reviewer agents use).
+Shared skills: `spec-format` (the contract Architect writes against and Builder/reviewer read), `architect-methodology` (5 reasoning lenses + research protocol), `coding-standards` (13 quality standards), `build-report` (Builder's output format), `review-lenses` (the 6-lens review mechanism the reviewer agent uses).
 
 ## Pipeline Overview
 
@@ -92,13 +91,6 @@ Shared skills: `spec-format` (the contract Architect writes against and Builder/
               commit/push   │   Builder fixes
                             │      │
                             └──────┘
-
-
-    ┌─────────────────────────────────────────────────────────────┐
-    │  DEEP-REVIEWER — External PR/MR Review (separate workflow)  │
-    │  Model: Opus | Interactive | Discovery-driven                │
-    │  Invoked via: /review-mr [number] or @deep-reviewer          │
-    └─────────────────────────────────────────────────────────────┘
 ```
 
 ## Iteration Loops
@@ -168,18 +160,16 @@ Both are populated by their respective skills and preserved across iterations.
 | **Spec Review** | Skill | Opus subagents | `/spec-review` | Main context + 5 parallel subagents |
 | **Builder** | Agent | Sonnet | `@builder` | Dedicated agent session |
 | **Reviewer-Internal** | Agent | Sonnet | `@reviewer-internal` or `/review-internal` | Dedicated agent session |
-| **Deep-Reviewer** | Agent | Opus | `@deep-reviewer` or `/review-mr` | Dedicated agent session |
 
 **Why skills for spec reviews, not agents?**
 - Spec reviews are interactive — you may want to discuss findings inline
 - The spec file carries all state — no agent memory needed
 - `/spec-review` launches subagents internally for parallelism
 
-**Why agents for code reviews, not skills?**
-- Code reviews need Bash (tests, lint, git commands)
+**Why an agent for code review, not a skill?**
+- Code review needs Bash (tests, lint, git commands)
 - Direct chat may be in a more constrained mode that can't run commands
 - Internal review (Sonnet) is mechanical/checklist-driven — fast and cheap
-- External review (Opus) needs deep judgment for intent reconstruction
 
 ## Quick Reference — Commands
 
@@ -190,7 +180,6 @@ Both are populated by their respective skills and preserved across iterations.
 | Detail audit of spec | `/spec-review` (after CTO passes or is skipped) |
 | Implement the spec | `@builder [spec path or task]` |
 | Review pipeline code (internal) | `@reviewer-internal` or `/review-internal` |
-| Review a teammate's PR/MR (external) | `@deep-reviewer` or `/review-mr [number]` |
 
 ## Key Files
 
@@ -199,7 +188,6 @@ Both are populated by their respective skills and preserved across iterations.
 | `claude/agents/architect.md` | Architect agent definition |
 | `claude/agents/builder.md` | Builder agent definition |
 | `claude/agents/reviewer-internal.md` | Internal code reviewer (Sonnet) — mechanical + quality |
-| `claude/agents/deep-reviewer.md` | External PR/MR reviewer (Opus) — discovery-driven |
 | `claude/skills/cto-review/SKILL.md` | CTO Review skill |
 | `claude/skills/spec-reviewer/SKILL.md` | Detail Audit skill (5 perspectives) |
 | `claude/skills/spec-format/SKILL.md` | Spec format contract (shared by all) |
@@ -211,16 +199,17 @@ Both are populated by their respective skills and preserved across iterations.
 
 ## Git-host dependency
 
-`reviewer-internal` and `deep-reviewer` need a git-host skill to fetch PR/MR data and post comments — install `claude/skills/gh-ops` (GitHub) or `claude/skills/glab-ops` (GitLab) depending on your remote. Both can coexist; each checks the actual remote before acting.
+`reviewer-internal` needs a git-host skill to commit/push after a SHIP IT verdict — install `claude/skills/gh-ops` (GitHub) or `claude/skills/glab-ops` (GitLab) depending on your remote. Both can coexist; each checks the actual remote before acting.
 
 ## Setup
 
-1. Copy or symlink the four agent files (`claude/agents/architect.md`, `builder.md`, `reviewer-internal.md`, `deep-reviewer.md`) into `~/.claude/agents/` (user-level) or `<repo>/.claude/agents/` (project-level).
-2. Copy or symlink these skill folders into the matching `skills/` directory: `spec-format`, `architect-methodology`, `coding-standards`, `build-report`, `review-lenses`, `cto-review`, `spec-reviewer`.
-3. Copy or symlink `claude/commands/review-mr.md` and `claude/commands/review-internal.md` into the matching `commands/` directory.
-4. Install `gh-ops` or `glab-ops` (see [README.md](README.md) — Utility Skills table) — `reviewer-internal` and `deep-reviewer` reference `glab-ops` by default; swap to `gh-ops` in their frontmatter if you're on GitHub.
-5. Copy [templates/CLAUDE.md.template](templates/CLAUDE.md.template) into your project as `CLAUDE.md` — the agents read it at Step 0 for global rules and project conventions.
+```bash
+./install.sh agentic-workflow
+./install.sh github-ops   # or: ./install.sh gitlab-ops
+```
 
-**Verify:** `@architect say hello` should load the architect persona and run its Step 0 (read CLAUDE.md, etc.). If it errors about a missing skill, re-check step 2.
+Then copy [templates/CLAUDE.md.template](templates/CLAUDE.md.template) into your project as `CLAUDE.md` — the agents read it at Step 0 for global rules and project conventions.
 
-`deep-reviewer` also works standalone for reviewing other people's PRs/MRs even if you don't use the rest of the pipeline. `cto-review` and `spec-reviewer` are skills, not agents — they run in your main conversation, invoked via `/cto-review` and `/spec-review` once the architect's spec exists.
+**Verify:** `@architect say hello` should load the architect persona and run its Step 0 (read CLAUDE.md, etc.). If it errors about a missing skill, re-run `./install.sh agentic-workflow`.
+
+`cto-review` and `spec-reviewer` are skills, not agents — they run in your main conversation, invoked via `/cto-review` and `/spec-review` once the architect's spec exists.

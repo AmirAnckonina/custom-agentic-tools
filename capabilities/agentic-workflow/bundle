@@ -1,0 +1,14 @@
+# desc: Spec-driven Architect → Builder → Reviewer pipeline
+# requires: a git-host bundle (github-ops or gitlab-ops) for commit/push/MR
+# guide: AGENTIC-WORKFLOW.md
+agents/architect.md
+agents/builder.md
+agents/reviewer-internal.md
+commands/review-internal.md
+skills/architect-methodology
+skills/spec-format
+skills/spec-reviewer
+skills/cto-review
+skills/build-report
+skills/coding-standards
+skills/review-lenses

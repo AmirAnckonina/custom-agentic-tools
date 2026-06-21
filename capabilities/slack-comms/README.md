@@ -1,0 +1,25 @@
+# Slack Comms
+
+Two structured Slack message types — ad-hoc channel requests and recurring daily status updates — both reviewed by you in DM before they ever hit a real channel.
+
+## What it includes
+
+- **Skills:** `channel-request` (one-off structured requests), `daily-update` (standup-style status updates)
+
+## How it works
+
+**`channel-request`** — composes a concise, actionable message (Priority / Background / Request / References / FYI tags) for a target channel. Learns and remembers per-channel format presets the first time you use it against a new channel, so future requests there follow the established convention automatically.
+
+**`daily-update`** — pulls relevant Jira tickets (via JQL), reads the channel's last message to match tone/format, and composes an emoji-sectioned update (Completed / In Progress / Blocked) with clickable ticket links and @mentions.
+
+Both **always send to your own DM first** for review — nothing posts to a real channel without explicit approval.
+
+## Install
+
+```bash
+./install.sh slack-comms
+```
+
+## Requires
+
+Slack MCP. `daily-update` additionally needs the `atlassian` capability if you want it pulling ticket context automatically (it'll skip that step gracefully without it).

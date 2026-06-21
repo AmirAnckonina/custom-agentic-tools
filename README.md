@@ -5,30 +5,45 @@ Personal stack of Claude Code agents, skills, and commands — generalized from 
 ## Layout
 
 ```
-claude/      Lean, 1:1 with a real Claude Code install — agents/, skills/, commands/
-templates/   Starting-point files you copy into your own project (not installed into .claude/)
+claude/         Payload — 1:1 with a real Claude Code install: agents/, skills/, commands/, hooks/
+capabilities/   One dir per capability: a `bundle` manifest + a README.md guide, side by side
+templates/      Starting-point files you copy into your own project (not installed into .claude/)
+install.sh      Installs capabilities (by symlink) into your live ~/.claude
 ```
 
-`claude/` has no leading dot on purpose — it's source content in this repo, not a live Claude Code directory. It installs into your real (dotted) `~/.claude` or `<repo>/.claude`: copy or symlink whichever `agents/`, `skills/`, or `commands/` entries you want into the matching folder there.
+`claude/` has no leading dot on purpose — it's source content in this repo, not a live Claude Code directory. The payload is **flat and shared**; a capability's `bundle` file is just a named view over it (so skills like `review-lenses` can belong to several capabilities without being duplicated). Prose lives at the repo root and in `capabilities/`; `claude/` holds only files Claude Code loads.
 
-## Agentic Workflow
+## Install
 
-The spec-driven **Architect → Builder → Reviewer** pipeline this stack is built around — most of the agents and several skills exist to support it. It's dense enough to warrant its own doc: see [AGENTIC-WORKFLOW.md](AGENTIC-WORKFLOW.md) for the full pipeline diagram, task-complexity paths, and setup steps.
+Capabilities install independently — take only what you want.
 
-## Utility Skills
+```bash
+git clone https://github.com/AmirAnckonina/custom-agentic-tools
+cd custom-agentic-tools
+./install.sh list                 # see all capabilities
+./install.sh agentic-workflow     # install one bundle
+./install.sh github-ops atlassian # …or several
+./install.sh gh-ops                # …or a single skill by name
+./install.sh uninstall             # remove every link this repo created
+```
 
-Independent skills, each usable on its own without the workflow above.
+`install.sh` **symlinks** each capability's items into `~/.claude/`, so the repo is the single source of truth: editing a skill from any Claude session edits the file here, and `git commit && git push` is your version control and backup. Idempotent (safe to re-run), backs up any existing real files, and supports project-level installs via `CLAUDE_DIR=path/to/project/.claude ./install.sh <capability>`.
 
-| Skill | What it does | Requires | Setup notes |
+> Hooks live in `claude/hooks/` as scripts but are wired up via `~/.claude/settings.json` (machine-specific), so they're referenced by path rather than symlinked.
+
+## Capabilities
+
+Each row is one `./install.sh <capability>`. Depth lives in each skill's own `SKILL.md`.
+
+| Capability | What it does | Requires | Details |
 |---|---|---|---|
-| [`gh-ops`](claude/skills/gh-ops/SKILL.md) | PR/CI ops via `gh` CLI | `gh` CLI, `gh auth login` | Coexists with `glab-ops` — each checks the repo's actual remote before acting |
-| [`glab-ops`](claude/skills/glab-ops/SKILL.md) | MR/CI ops via `glab` CLI | `glab` CLI, `glab auth login` | Self-managed GitLab instances: read `glab-ops/README.md` first (host/port/SSH pitfalls) |
-| [`channel-request`](claude/skills/channel-request/SKILL.md) | Structured Slack messages, DM-reviewed before posting | Slack MCP | No channel presets pre-loaded — first use against a channel asks for its conventions and remembers them |
-| [`daily-update`](claude/skills/daily-update/SKILL.md) | Posts a structured daily-update message | Slack MCP; `atlassian-doc-ops` if pulling tickets | — |
-| [`atlassian-doc-ops`](claude/skills/atlassian-doc-ops/SKILL.md) | Jira/Confluence doc and ticket ops | Atlassian MCP | Resolves workspace/cloudId dynamically — no project keys hardcoded |
-| [`generate-service-context`](claude/skills/generate-service-context/SKILL.md) | Generates a structural `service-context.yaml` per repo | — | User-level install recommended (cross-repo). Scaffolds its own catalog (`SCHEMA.md`/`CONVENTIONS.md`/`INDEX.md`) on first use. Skip if you only maintain one repo |
-| [`skill-creator`](claude/skills/skill-creator/SKILL.md) | Meta-skill for authoring new skills | — | User-level install — used across projects |
-| [`version-drift-tracker`](claude/skills/version-drift-tracker/SKILL.md) | Tag-vs-deployed drift report | `gh-ops` or `glab-ops`; a `service-map.md` you write yourself (see the skill's "Required Config"); `slack` skills optional for posting results | Skip if you don't run multiple services with separate deploy-time version pinning |
+| `agentic-workflow` | Spec-driven **Architect → Builder → Reviewer** pipeline — most agents and several skills exist to support it | a git-host capability | [capabilities/agentic-workflow](capabilities/agentic-workflow/README.md) |
+| `github-ops` | PR & CI ops via the `gh` CLI — repo-aware, coexists with `gitlab-ops` | `gh` CLI + `gh auth login` | [capabilities/github-ops](capabilities/github-ops/README.md) |
+| `gitlab-ops` | MR & CI ops via the `glab` CLI | `glab` CLI + `glab auth login` | [capabilities/gitlab-ops](capabilities/gitlab-ops/README.md) |
+| `atlassian` | Jira & Confluence doc and ticket ops — resolves workspace/cloudId dynamically | Atlassian MCP | [capabilities/atlassian](capabilities/atlassian/README.md) |
+| `slack-comms` | Structured Slack messages — channel requests (DM-reviewed) & daily updates | Slack MCP (+`atlassian` optional) | [capabilities/slack-comms](capabilities/slack-comms/README.md) |
+| `service-ops` | Per-repo `service-context.yaml` catalog + tag-vs-deployed drift report | a git-host capability; drift needs a `service-map` you write | [capabilities/service-ops](capabilities/service-ops/README.md) |
+| `skill-authoring` | Meta-skill for authoring new skills | — | [capabilities/skill-authoring](capabilities/skill-authoring/README.md) |
 
 ## Provenance
 

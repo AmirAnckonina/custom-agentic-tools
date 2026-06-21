@@ -1,0 +1,3 @@
+# desc: MR & CI operations via the GitLab `glab` CLI
+# requires: glab CLI + `glab auth login`
+skills/glab-ops

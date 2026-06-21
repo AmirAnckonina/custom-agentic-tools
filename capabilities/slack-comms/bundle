@@ -1,0 +1,4 @@
+# desc: Structured Slack messages — channel requests & daily updates
+# requires: Slack MCP (atlassian bundle optional, for pulling tickets into updates)
+skills/channel-request
+skills/daily-update
