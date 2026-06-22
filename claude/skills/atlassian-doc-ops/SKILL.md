@@ -221,13 +221,14 @@ When asked to mark, update, or clear cells:
 - Title (suggest one based on context if not given)
 - Brief description of the work or issue
 
-**Company field defaults — confirm if not stated, never assume silently:**
+**Common fields — confirm if not stated, never assume silently:**
 
 | Field | Default |
 |---|---|
-| Team | Core team |
 | Assignee | Current user (fetch via `atlassianUserInfo`) |
-| Content Destination | Cloud |
+| Team / project-specific fields | Ask the user; remember the answer per project |
+
+> If your Jira instance has required custom fields (e.g. a team field, an environment/destination field), resolve their valid values via `getJiraProjectIssueTypesMetadata` and ask the user which to use on first ticket — don't hardcode a default here.
 
 **Per type extras:**
 - **Subtask:** parent ticket ID (required)

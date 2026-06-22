@@ -28,14 +28,17 @@ Only write what was provided. No invented context.]
 
 ## Per-Type Field Requirements
 
+> **Project-specific fields:** some Jira instances require custom fields (a team
+> field, an environment/destination field, etc.). Resolve their valid values via
+> `getJiraProjectIssueTypesMetadata` and ask the user on the first ticket per
+> project — don't assume a default. The tables below list the standard fields only.
+
 ### Task
 | Field | Required | Default |
 |---|---|---|
 | Summary | Yes | — |
 | Description | Yes | Universal structure |
-| Team | Yes | Core team |
 | Assignee | Yes | Current user |
-| Content Destination | Yes | Cloud |
 | Parent Epic | No | Ask if relevant |
 
 ### Subtask
@@ -44,9 +47,7 @@ Only write what was provided. No invented context.]
 | Summary | Yes | — |
 | Description | Yes | Universal structure |
 | Parent issue ID | **Yes** | Must be provided |
-| Team | Yes | Core team |
 | Assignee | Yes | Current user |
-| Content Destination | Yes | Cloud |
 
 Subtask description can be shorter — focus on the specific slice of work, not
 the full feature context (that lives on the parent).
@@ -56,9 +57,7 @@ the full feature context (that lives on the parent).
 |---|---|---|
 | Summary | Yes | Format: `[Component] Short description of the bug` |
 | Description | Yes | See Bug template below |
-| Team | Yes | Core team |
 | Assignee | Yes | Current user |
-| Content Destination | Yes | Cloud |
 | Priority | No | Ask if not provided |
 
 **Bug description structure:**
@@ -91,7 +90,6 @@ the full feature context (that lives on the parent).
 | CVE ID | **Yes** | Must be provided |
 | Affected component | **Yes** | Must be provided |
 | Severity | **Yes** | Ask if not provided (Critical/High/Medium/Low) |
-| Content Destination | Yes | Cloud |
 
 **CVE description structure:**
 ```markdown
@@ -110,7 +108,7 @@ the full feature context (that lives on the parent).
 ## 📋 Definition of Done
 - [ ] Dependency updated / patch applied
 - [ ] Security scan passing
-- [ ] Deployed to [content destination]
+- [ ] Deployed to [target environment]
 ```
 
 ---
