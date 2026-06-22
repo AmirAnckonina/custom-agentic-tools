@@ -4,9 +4,19 @@ Spec-driven **Architect → Builder → Reviewer** pipeline. The Architect write
 
 ## What it includes
 
-- **Agents:** [`architect`](../../claude/agents/architect.md) (writes/revises specs), [`builder`](../../claude/agents/builder.md) (TDD implementation), [`reviewer-internal`](../../claude/agents/reviewer-internal.md) (mechanical gate + 6-lens review)
-- **Command:** [`/review-internal`](../../claude/commands/review-internal.md) — runs the reviewer against the current branch
-- **Skills:** [`architect-methodology`](../../claude/skills/architect-methodology/SKILL.md), [`spec-format`](../../claude/skills/spec-format/SKILL.md) (the spec contract + lifecycle states), [`spec-reviewer`](../../claude/skills/spec-reviewer/SKILL.md), [`cto-review`](../../claude/skills/cto-review/SKILL.md) (optional spec challenge gates), [`build-report`](../../claude/skills/build-report/SKILL.md) (Builder's output format), [`coding-standards`](../../claude/skills/coding-standards/SKILL.md), [`review-lenses`](../../claude/skills/review-lenses/SKILL.md) (the 6-lens review mechanism)
+| Component | Type | Role | Source |
+|---|---|---|---|
+| `architect` | Agent | Writes/revises the spec | [→](../../claude/agents/architect.md) |
+| `builder` | Agent | Implements it via TDD | [→](../../claude/agents/builder.md) |
+| `reviewer-internal` | Agent | Mechanical gate + 6-lens review | [→](../../claude/agents/reviewer-internal.md) |
+| `/review-internal` | Command | Runs the reviewer on the current branch | [→](../../claude/commands/review-internal.md) |
+| `spec-format` | Skill | The spec contract + lifecycle states | [→](../../claude/skills/spec-format/SKILL.md) |
+| `architect-methodology` | Skill | Architect's reasoning lenses + research protocol | [→](../../claude/skills/architect-methodology/SKILL.md) |
+| `cto-review` | Skill | Optional strategic spec challenge gate | [→](../../claude/skills/cto-review/SKILL.md) |
+| `spec-reviewer` | Skill | Optional 5-perspective detail audit | [→](../../claude/skills/spec-reviewer/SKILL.md) |
+| `build-report` | Skill | Builder's output format | [→](../../claude/skills/build-report/SKILL.md) |
+| `coding-standards` | Skill | Quality standards (Builder + Reviewer) | [→](../../claude/skills/coding-standards/SKILL.md) |
+| `review-lenses` | Skill | The 6-lens review mechanism | [→](../../claude/skills/review-lenses/SKILL.md) |
 
 ## How it works
 

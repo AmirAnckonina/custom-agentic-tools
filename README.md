@@ -5,13 +5,14 @@ Personal stack of Claude Code agents, skills, and commands, organized as indepen
 ## Layout
 
 ```
-claude/         Payload — 1:1 with a real Claude Code install: agents/, skills/, commands/, hooks/
-capabilities/   One dir per capability: a `bundle` manifest + a README.md guide, side by side
-templates/      Starting-point files you copy into your own project (not installed into .claude/)
-install.sh      Installs capabilities (by symlink) into your live ~/.claude
+capabilities/   ← START HERE. One folder per capability: a guide (README.md) + its bundle manifest
+claude/            The actual files capabilities install — agents/, skills/, commands/, hooks/
+                   (you rarely open these directly; the guides link into them when you want source)
+templates/         Starting-point files you copy into your own project (not installed into .claude/)
+install.sh         Installs a capability (by symlink) into your live ~/.claude
 ```
 
-`claude/` has no leading dot on purpose — it's source content in this repo, not a live Claude Code directory. The payload is **flat and shared**; a capability's `bundle` file is just a named view over it (so skills like `review-lenses` can belong to several capabilities without being duplicated). Prose lives at the repo root and in `capabilities/`; `claude/` holds only files Claude Code loads.
+**Two trees, on purpose.** `capabilities/` is what you browse and install from. `claude/` is the flat, shared payload those capabilities are built out of — kept flat so a skill like `review-lenses` can belong to several capabilities without being duplicated. A capability's `bundle` file just lists which payload files to symlink in. `claude/` has no leading dot because it's source content here, not a live Claude Code directory.
 
 ## Install
 

@@ -4,7 +4,10 @@ Two structured Slack message types — ad-hoc channel requests and recurring dai
 
 ## What it includes
 
-- **Skills:** [`channel-request`](../../claude/skills/channel-request/SKILL.md) (one-off structured requests), [`daily-update`](../../claude/skills/daily-update/SKILL.md) (standup-style status updates)
+| Component | Type | Role | Source |
+|---|---|---|---|
+| `channel-request` | Skill | One-off structured channel requests | [→](../../claude/skills/channel-request/SKILL.md) |
+| `daily-update` | Skill | Standup-style status updates | [→](../../claude/skills/daily-update/SKILL.md) |
 
 ## How it works
 

@@ -4,7 +4,10 @@ Two related, independent skills for managing a multi-service codebase: generatin
 
 ## What it includes
 
-- **Skills:** [`generate-service-context`](../../claude/skills/generate-service-context/SKILL.md) (creates `service-context.yaml` per repo), [`version-drift-tracker`](../../claude/skills/version-drift-tracker/SKILL.md) (tag-vs-deployed drift report)
+| Component | Type | Role | Source |
+|---|---|---|---|
+| `generate-service-context` | Skill | Creates a `service-context.yaml` per repo | [→](../../claude/skills/generate-service-context/SKILL.md) |
+| `version-drift-tracker` | Skill | Tag-vs-deployed drift report | [→](../../claude/skills/version-drift-tracker/SKILL.md) |
 
 ## How it works
 
