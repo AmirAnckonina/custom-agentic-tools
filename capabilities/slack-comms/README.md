@@ -4,13 +4,13 @@ Two structured Slack message types — ad-hoc channel requests and recurring dai
 
 ## What it includes
 
-- **Skills:** `channel-request` (one-off structured requests), `daily-update` (standup-style status updates)
+- **Skills:** [`channel-request`](../../claude/skills/channel-request/SKILL.md) (one-off structured requests), [`daily-update`](../../claude/skills/daily-update/SKILL.md) (standup-style status updates)
 
 ## How it works
 
-**`channel-request`** — composes a concise, actionable message (Priority / Background / Request / References / FYI tags) for a target channel. Learns and remembers per-channel format presets the first time you use it against a new channel, so future requests there follow the established convention automatically.
+**[`channel-request`](../../claude/skills/channel-request/SKILL.md)** — composes a concise, actionable message (Priority / Background / Request / References / FYI tags) for a target channel. Learns and remembers per-channel format presets the first time you use it against a new channel, so future requests there follow the established convention automatically.
 
-**`daily-update`** — pulls relevant Jira tickets (via JQL), reads the channel's last message to match tone/format, and composes an emoji-sectioned update (Completed / In Progress / Blocked) with clickable ticket links and @mentions.
+**[`daily-update`](../../claude/skills/daily-update/SKILL.md)** — pulls relevant Jira tickets (via JQL), reads the channel's last message to match tone/format, and composes an emoji-sectioned update (Completed / In Progress / Blocked) with clickable ticket links and @mentions.
 
 Both **always send to your own DM first** for review — nothing posts to a real channel without explicit approval.
 
@@ -22,4 +22,4 @@ Both **always send to your own DM first** for review — nothing posts to a real
 
 ## Requires
 
-Slack MCP. `daily-update` additionally needs the `atlassian` capability if you want it pulling ticket context automatically (it'll skip that step gracefully without it).
+Slack MCP. `daily-update` additionally needs the [`atlassian`](../atlassian/README.md) capability if you want it pulling ticket context automatically (it'll skip that step gracefully without it).

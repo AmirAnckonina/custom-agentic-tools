@@ -4,7 +4,7 @@ A meta-skill: an interactive, gated workflow for building (or reviewing) new Cla
 
 ## What it includes
 
-- **Skill:** `skill-creator` — invoked directly in chat ("create a skill", "build a skill for X")
+- **Skill:** [`skill-creator`](../../claude/skills/skill-creator/SKILL.md) — invoked directly in chat ("create a skill", "build a skill for X")
 
 ## How it works
 

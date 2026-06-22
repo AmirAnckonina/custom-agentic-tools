@@ -4,9 +4,9 @@ Spec-driven **Architect → Builder → Reviewer** pipeline. The Architect write
 
 ## What it includes
 
-- **Agents:** `architect` (writes/revises specs), `builder` (TDD implementation), `reviewer-internal` (mechanical gate + 6-lens review)
-- **Command:** `/review-internal` — runs the reviewer against the current branch
-- **Skills:** `architect-methodology`, `spec-format` (the spec contract + lifecycle states), `spec-reviewer`, `cto-review` (optional spec challenge gates), `build-report` (Builder's output format), `coding-standards`, `review-lenses` (the 6-lens review mechanism)
+- **Agents:** [`architect`](../../claude/agents/architect.md) (writes/revises specs), [`builder`](../../claude/agents/builder.md) (TDD implementation), [`reviewer-internal`](../../claude/agents/reviewer-internal.md) (mechanical gate + 6-lens review)
+- **Command:** [`/review-internal`](../../claude/commands/review-internal.md) — runs the reviewer against the current branch
+- **Skills:** [`architect-methodology`](../../claude/skills/architect-methodology/SKILL.md), [`spec-format`](../../claude/skills/spec-format/SKILL.md) (the spec contract + lifecycle states), [`spec-reviewer`](../../claude/skills/spec-reviewer/SKILL.md), [`cto-review`](../../claude/skills/cto-review/SKILL.md) (optional spec challenge gates), [`build-report`](../../claude/skills/build-report/SKILL.md) (Builder's output format), [`coding-standards`](../../claude/skills/coding-standards/SKILL.md), [`review-lenses`](../../claude/skills/review-lenses/SKILL.md) (the 6-lens review mechanism)
 
 ## How it works
 
@@ -24,4 +24,4 @@ Full pipeline diagram, task-complexity paths (simple/medium/complex), and spec l
 
 ## Requires
 
-A git-host capability (`github-ops` or `gitlab-ops`) for the Reviewer's commit/push step after a `SHIP IT` verdict.
+A git-host capability ([`github-ops`](../github-ops/README.md) or [`gitlab-ops`](../gitlab-ops/README.md)) for the Reviewer's commit/push step after a `SHIP IT` verdict.

@@ -4,7 +4,7 @@ PR lifecycle, code review, and CI monitoring through the official `gh` CLI. Repo
 
 ## What it includes
 
-- **Skill:** `gh-ops` — no agent or command; loaded by other agents (e.g. the agentic-workflow Reviewer) or invoked directly in chat
+- **Skill:** [`gh-ops`](../../claude/skills/gh-ops/SKILL.md) — no agent or command; loaded by other agents (e.g. the [agentic-workflow Reviewer](../agentic-workflow/README.md)) or invoked directly in chat
 
 ## How it works
 

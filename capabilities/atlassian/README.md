@@ -4,7 +4,7 @@ Creates and updates Confluence pages (design docs, test plans, architecture docs
 
 ## What it includes
 
-- **Skill:** `atlassian-doc-ops` — no agent or command; invoked directly in chat ("create a design doc", "open a bug", "mark TC-001 as passed")
+- **Skill:** [`atlassian-doc-ops`](../../claude/skills/atlassian-doc-ops/SKILL.md) — no agent or command; invoked directly in chat ("create a design doc", "open a bug", "mark TC-001 as passed")
 
 ## How it works
 
