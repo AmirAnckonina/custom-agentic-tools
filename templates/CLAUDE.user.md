@@ -1,6 +1,6 @@
 # CLAUDE.md — User-Level Rules (Amir)
 
-> Draft — destined for `~/.claude/CLAUDE.md`. Loads into EVERY Claude Code session on this machine, so it stays lean: global behavior only. Project specifics belong in each repo's own CLAUDE.md (see `docs/CLAUDE.md.template` for that).
+> Live at `~/.claude/CLAUDE.md` (symlink into this repo). Loads into EVERY Claude Code session on this machine, so it stays lean: global behavior only. Project specifics belong in each repo's own CLAUDE.md (see `templates/CLAUDE.md.template` for that).
 
 ## GLOBAL RULES (all modes: direct chat, architect, builder, reviewer)
 
@@ -20,13 +20,17 @@
 - **Respect conventions:** follow the target repo's naming, structure, and architecture; flag deviations.
 
 ### Stack Defaults
-<!-- ADJUST: personal defaults, e.g.: -->
 - Primary language: Go. Secondary: Java/Python as the repo dictates.
 - Prefer table-driven tests in Go; standard library before frameworks.
 
+### Project Convention Fallbacks
+Used only when the repo's own CLAUDE.md declares nothing — per-repo conventions always override.
+- **Branch naming:** `feature/<short-description>`; prefix with the ticket ID when one exists (`feature/PROJ-123-short-description`).
+- **Commit messages:** descriptive — explain *what* and *why*, not a bare summary.
+
 ## DIRECT CHAT RULES (no agent active)
 
-- **Ask before acting:** require approval before broad multi-file reads, starting implementation, or repeated automated fix loops. <!-- ADJUST: tune to taste -->
+- **Balanced autonomy:** read and analyze freely (read-only actions need no approval). Ask before editing files, starting implementation, or repeated automated fix loops.
 - **No monolithic responses:** for multi-part work, present a numbered outline first.
 
 ## AGENT MODE
@@ -39,5 +43,3 @@ When a custom agent (Architect, Builder, Reviewer) is active, the agent's own pr
 - Specs produced by the Architect live in the target project's `docs/` directory, never in `~/.claude/`.
 - The spec's `**Status:**` field is the single source of truth; Builder starts only on `Approved`.
 - Reviewer's deliverable is the terminal report; git-host operations (`gh-ops` GitHub / `glab-ops` GitLab, each verifies the actual remote) run only on explicit request.
-
-<!-- ADJUST after install: project-conventions defaults (branch naming, commit style) if you want machine-wide fallbacks -->
