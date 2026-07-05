@@ -8,12 +8,12 @@ Spec-driven **Architect → Builder → Reviewer** pipeline. The Architect write
 |---|---|---|---|
 | `architect` | Agent | Writes/revises the spec | [→](../../claude/agents/architect.md) |
 | `builder` | Agent | Implements it via TDD | [→](../../claude/agents/builder.md) |
-| `reviewer-internal` | Agent | Mechanical gate + 6-lens review | [→](../../claude/agents/reviewer-internal.md) |
+| `reviewer` | Agent | Mechanical gate + 6-lens review | [→](../../claude/agents/reviewer.md) |
 | `/review-internal` | Command | Runs the reviewer on the current branch | [→](../../claude/commands/review-internal.md) |
 | `spec-format` | Skill | The spec contract + lifecycle states | [→](../../claude/skills/spec-format/SKILL.md) |
 | `architect-methodology` | Skill | Architect's reasoning lenses + research protocol | [→](../../claude/skills/architect-methodology/SKILL.md) |
 | `cto-review` | Skill | Optional strategic spec challenge gate | [→](../../claude/skills/cto-review/SKILL.md) |
-| `spec-reviewer` | Skill | Optional 5-perspective detail audit | [→](../../claude/skills/spec-reviewer/SKILL.md) |
+| `spec-review` | Skill | Optional 5-perspective detail audit | [→](../../claude/skills/spec-review/SKILL.md) |
 | `build-report` | Skill | Builder's output format | [→](../../claude/skills/build-report/SKILL.md) |
 | `coding-standards` | Skill | Quality standards (Builder + Reviewer) | [→](../../claude/skills/coding-standards/SKILL.md) |
 | `review-lenses` | Skill | The 6-lens review mechanism | [→](../../claude/skills/review-lenses/SKILL.md) |
@@ -34,4 +34,4 @@ Full pipeline diagram, task-complexity paths (simple/medium/complex), and spec l
 
 ## Requires
 
-A git-host capability ([`github-ops`](../github-ops/README.md) or [`gitlab-ops`](../gitlab-ops/README.md)) for the Reviewer's commit/push step after a `SHIP IT` verdict.
+Nothing beyond Claude Code — the Reviewer's default deliverable is the terminal report. **Optionally** install a git-host capability ([`github-ops`](../github-ops/README.md) or [`gitlab-ops`](../gitlab-ops/README.md)) to enable on-request commit/push/PR-MR after a `SHIP IT` verdict; the Reviewer loads the one matching the actual remote, only when you explicitly ask.

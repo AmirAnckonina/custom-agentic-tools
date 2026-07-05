@@ -12,6 +12,8 @@ The 13 principles that define **how production code must be written and evaluate
 - **Reviewer:** Evaluate against during review.
 - **Direct chat:** Follow when writing or reviewing code.
 
+> **Numeric thresholds are defaults, not laws.** Coverage %, function/file size limits, and nesting depth below are the baseline when a repo declares nothing. A repo's `CLAUDE.md` or established team conventions override them — flag a deviation only when the repo itself has no stated convention.
+
 ---
 
 ## 1. Test Coverage

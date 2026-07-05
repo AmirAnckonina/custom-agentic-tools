@@ -1,6 +1,6 @@
 ---
 name: review-lenses
-description: "Review orchestration: 6 parallel lenses, severity levels, enforcement protocol, verdict rules, and report format. The single source of truth for how reviews are scored and reported. Loaded by deep-reviewer agent."
+description: "Review scoring system: 6 parallel lenses, severity levels, enforcement protocol, and verdict rules. The single source of truth for how reviews are scored. Loaded by the reviewer agent, which injects the relevant sections into the lens subagents it dispatches."
 user-invocable: false
 ---
 
@@ -8,10 +8,9 @@ user-invocable: false
 
 This skill defines the **review scoring system** and the **6 parallel review lenses**.
 
-**Loaded by:** `deep-reviewer` agent (Opus). Not user-invocable — orchestration is handled by the parent agent.
+**Loaded by:** the `reviewer` agent (via `skills:` frontmatter). Not user-invocable — orchestration is handled by the parent agent, which injects the Subagent Output Format and Boundaries into each lens prompt.
 
-> **Requires `coding-standards` to be loaded.** Lens checklists reference the 13 coding-standards principles by number. If coding-standards is unavailable, respond with:
-> `"review-lenses requires the coding-standards skill. Please load it and retry."` — then halt.
+> The 6 lens reference files under `references/` carry the operational copies of the 13 `coding-standards` principles — lens subagents need only their reference file, not the coding-standards skill. `coding-standards/SKILL.md` is the editing-time authority: change a principle there first, then sync the affected lens file.
 
 ---
 
@@ -28,13 +27,13 @@ Your job is to break the code, not confirm it works. The author already believes
 
 ## Severity Levels
 
-**🔴 CRITICAL** — Must fix. Security vulnerabilities, data loss risks, spec violations that change behavior, broken tests.
+**🔴 CRITICAL** — merging as-is causes incorrect data, data loss, a security breach, or an outage. A finding is 🔴 only when ALL THREE hold: (1) **reachable** — fires on a real code path shipped in this change, not theoretical; (2) **violates a top-tier invariant** — security boundary, data integrity, outage class; (3) **no upstream mitigation** — nothing above this code already bounds the impact. If any of the three is uncertain, it's 🟡. **When in doubt, downgrade** — over-flagged criticals teach authors to ignore the label. (Spec-signature mismatches, missing AC tests, and broken tests are Pass 1 territory and are 🔴 by definition there.)
 
-**🟡 IMPORTANT** — Should fix. Missing error handling, test gaps, performance issues, incomplete edge cases.
+**🟡 IMPORTANT** — real risk, bounded scope. Should fix before broader rollout but not a merge blocker: missing error handling on recoverable paths, test gaps, performance regressions that degrade rather than fail, a 🔴-shaped finding where one criterion is uncertain.
 
-**🔵 SUGGESTION** — Nice to have. Readability, naming, minor refactors, style consistency.
+**🔵 SUGGESTION** — author may defer. Readability, naming, minor refactors, style consistency, theoretical edge cases, micro-optimizations.
 
-**🟢 POSITIVE** — Good work worth calling out. Clean abstractions, thorough tests, smart edge case handling.
+**3 tiers only.** No POSITIVE / 🟢 / `POS-{n}` category — do not include praise findings or sections. Good work is noted, if at all, in one clause of the lens Summary, never as a finding.
 
 ---
 
@@ -42,7 +41,6 @@ Your job is to break the code, not confirm it works. The author already believes
 
 - For each principle covered by a lens, **actively search** for violations using tool-assisted scans (grep for magic numbers, `@SuppressWarnings`/`noinspection`, bare catch blocks, raw `Map`/`Object` types where DTOs should exist).
 - A lens is **Clean only if you have evidence** — you checked and found nothing. "I didn't look closely" means findings were missed.
-- Actively identify at least one **POSITIVE** per review — clean abstractions, thorough tests, smart edge case handling. If no genuine positive exists, note it explicitly. Do not manufacture one.
 
 ---
 
@@ -63,9 +61,9 @@ Your job is to break the code, not confirm it works. The author already believes
 
 - **subagent_type:** `general-purpose` (needs Read, Grep, Glob, Bash for code analysis)
 - **model:** Sonnet by default. Opus if `--deep` flag was passed.
-- **maxTurns:** 6 per subagent (parent pre-reads files and diff — lenses only need tools for surrounding context)
+- **Turn budget:** instruct each lens (in its prompt) to aim for ≤6 tool calls — the parent pre-reads files and diff, so lenses only need tools for surrounding context. (This is prompt guidance; the Agent tool has no per-invocation turn cap.)
 - **Pre-read optimization:** The parent orchestrator reads all changed files and the diff ONCE, then injects relevant content into each lens prompt. Lenses should NOT re-read these files or re-run `git diff`. They may read additional files (imports, callers, related modules) for surrounding context.
-- **Boundaries:** READ ONLY. No file modifications. No git lifecycle commands. No glab commands. No user interaction.
+- **Boundaries:** READ ONLY. No file modifications. No git lifecycle commands. No git-host commands (`gh`/`glab`). No user interaction.
 
 ---
 
@@ -73,7 +71,7 @@ Your job is to break the code, not confirm it works. The author already believes
 
 Subagents return natural findings within their lens focus. No principle numbers, no scorecard mapping.
 
-**IMPORTANT — Emoji rendering:** Always use actual Unicode emoji characters (🔴 🟡 🔵 🟢 ✅ ⚠️ ❌), NEVER markdown shortcodes like `:red_circle:` or `:yellow_circle:`. Shortcodes do not render in the terminal.
+**IMPORTANT — Emoji rendering:** Always use actual Unicode emoji characters (🔴 🟡 🔵 ✅ ⚠️ ❌), NEVER markdown shortcodes like `:red_circle:` or `:yellow_circle:`. Shortcodes do not render in the terminal.
 
 ```
 ### Findings
@@ -81,7 +79,6 @@ Subagents return natural findings within their lens focus. No principle numbers,
 🔴 CRITICAL — [file:line] — [what's wrong] — [why it matters]
 🟡 IMPORTANT — [file:line] — [description] — [impact]
 🔵 SUGGESTION — [file:line] — [description]
-🟢 POSITIVE — [file:area] — [what's good]
 
 ### Summary
 [2-3 sentences: overall assessment from this lens's perspective]
@@ -119,7 +116,7 @@ Driven by highest finding severity — simple and deterministic.
 |----------------------|---------|
 | Any 🔴 CRITICAL | **BLOCKER** |
 | Any 🟡 IMPORTANT (no criticals) | **NEEDS WORK** |
-| Only 🔵 SUGGESTION / 🟢 POSITIVE | **SHIP IT** |
+| Only 🔵 SUGGESTION (or no findings) | **SHIP IT** |
 
 ---
 
@@ -129,7 +126,8 @@ The parent assigns prefixed IDs after collecting all lens results:
 - `CRT-{n}` — Critical
 - `IMP-{n}` — Important
 - `SUG-{n}` — Suggestion
-- `POS-{n}` — Positive
+
+No `POS-{n}` IDs are ever assigned.
 
 These IDs enable drill-down: user can ask "expand CRT-1" or "show Reliability details".
 
@@ -153,7 +151,7 @@ The primary review output table. Replaces the 13-principle scorecard — finding
 
 **Status values:**
 - `✅ Clean` — no findings
-- `⚠️ N findings` — only suggestions/positives
+- `⚠️ N findings` — only suggestions
 - `🟡 N important` — important findings, no criticals
 - `🔴 N critical` — critical findings present
 - `❌ NOT REVIEWED` — lens failed after retry
@@ -162,39 +160,4 @@ The primary review output table. Replaces the 13-principle scorecard — finding
 
 ## Review Report Format
 
-**IMPORTANT — Emoji rendering:** Always use actual Unicode emoji characters (🔴 🟡 🔵 🟢 ✅ ⚠️ ❌), NEVER markdown shortcodes.
-
-```
-## Review Report
-
-**Verdict: {BLOCKER | NEEDS WORK | SHIP IT}**
-**TL;DR:** [1-2 sentences: overall assessment and biggest concern]
-**Scope:** [files reviewed, lens count, model used]
-
-### Findings Summary
-- 🔴 Critical: [count]
-- 🟡 Important: [count]
-- 🔵 Suggestion: [count]
-- 🟢 Positive: [count]
-
-### Lens Coverage
-[Insert Lens Summary Table above]
-
-### Findings
-
-[Critical and Important always expanded]
-
-🔴 **CRT-1** — file:line — description
-   └─ Lens: [source lens] · [why it matters]
-
-🟡 **IMP-1** — file:line — description
-   └─ Lens: [source lens] · [impact]
-
-🔵 SUG-1 — file:line — description
-🟢 POS-1 — [what's good]
-
-> Drill-down: ask by finding ID ("expand CRT-1") or by lens ("show Reliability details")
-
-### Activity Summary
-> [e.g., "Pre-read 12 changed files. Launched 6 Sonnet lenses. Collected 14 findings, deduplicated to 11. Cross-checked 5 pairs."]
-```
+**Single owner: the `reviewer` agent definition.** The full report template (Pass 1 mechanical-checks table, findings summary, lens coverage, drill-down protocol, activity summary) lives in `agents/reviewer.md` — it includes agent-specific sections this skill has no business duplicating. This skill owns only the building blocks the report is assembled from: Severity Levels, Subagent Output Format, the Lens Summary Table, Verdict Rules, and Finding IDs. Do not maintain a second report template here.

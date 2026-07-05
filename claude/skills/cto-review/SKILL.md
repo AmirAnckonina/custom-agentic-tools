@@ -1,11 +1,9 @@
 ---
 name: cto-review
 description: >
-  CTO-level strategic challenge of architecture specs before detail audits begin.
-  Use when: "cto review", "challenge the spec", "strategic review", "cto challenge", "review spec strategically".
-  Asks 3-5 hard questions about approach, simplicity, operational fit, and blast radius.
-  Verdict: PASS (proceed to detail audits) or RETHINK (back to Architect with specific feedback).
-  Writes findings into the spec's CTO Review section. Arrives clean — no Architect context by design.
+  Use when a Draft spec needs a strategic challenge before detail audits — "cto review",
+  "challenge the spec", "strategic review", "is this the right approach". Challenges the
+  approach, not the details.
 user-invocable: true
 ---
 
@@ -65,7 +63,8 @@ Architect (Draft) → CTO Review → Detail Audits (/spec-review) → Builder
 
 ### Step 1: Read and Orient
 
-1. Read the spec file **in full** — do not skim
+0. **Guards:** locate the spec (repo's `docs/`, or the path the user gave). No spec found → stop and say so. Spec already `Approved` with no changes since → stop: *"Spec is already Approved — nothing to challenge. Re-run after a revision."*
+1. Read the spec file **in full** — do not skim. Set `**Status:**` to `CTO Review` (the status field must reflect where the pipeline actually is while you work).
 2. Read the `## Overview` and `## Acceptance Criteria` to understand intent
 3. Read referenced files if needed (existing implementations, related specs)
 4. Note what the user was actually asking for — is the spec proportional to the ask?
@@ -80,7 +79,7 @@ From the 5 challenge areas above, select **3-5 questions** that are most relevan
 These are not rhetorical — they must surface real concerns or blind spots.
 
 Good CTO questions:
-- *"Why a new service instead of extending CDM?"*
+- *"Why a new service instead of extending the existing reporting service?"*
 - *"What happens to in-flight requests during rollback?"*
 - *"This adds a Kafka dependency where none existed — is the operational cost justified for this volume?"*
 - *"The spec has 4 components for what seems like a single-endpoint change. What am I missing?"*

@@ -1,6 +1,6 @@
 ---
 name: architect-methodology
-description: "Architecture reasoning lenses, research protocol, gatekeeper checklist, and decision output format. Loaded by the Architect agent; usable by any agent evaluating design decisions."
+description: "Use when evaluating a design or architecture decision — 'best approach', 'should I use X or Y', 'how should I structure', trade-off analysis, ADRs — or when writing a spec. Provides 5 reasoning lenses, a research protocol, and a gatekeeper checklist. Preloaded by the Architect agent; works standalone in direct chat (Advisory Mode)."
 user-invocable: true
 ---
 

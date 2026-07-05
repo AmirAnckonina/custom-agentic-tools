@@ -1,12 +1,10 @@
 ---
 name: spec-review
 description: >
-  Detail audit of architecture specs through 5 independent perspectives before the Builder starts.
-  Use when: "spec review", "detail audit", "review the spec", "audit the spec", "check the spec", "run detail audits".
-  Examines specs through Security, Scalability, API Design, Completeness, and Scope lenses.
-  Each perspective runs as a parallel subagent for speed and independence.
-  Produces structured findings per perspective with BLOCKING issues and suggestions.
-  Updates the Review Notes table in the spec file. Arrives clean — no Architect context by design.
+  Use when a spec needs its detail audits before the Builder starts — "spec review",
+  "detail audit", "audit the spec", "run detail audits". 5 independent perspectives:
+  Security, Scalability, API Design, Completeness, Scope. Runs after /cto-review passes
+  or is skipped.
 user-invocable: true
 ---
 
@@ -42,7 +40,7 @@ scalability review, API review, completeness check, scope review, spec approval,
 Before reviewing, gather context:
 
 1. Read the spec file in full — do not skim
-2. Check `**Status:**` — should be `Detail Audit` or `CTO Review` (if CTO was skipped, `Draft` is also valid)
+2. Check `**Status:**` — should be `Detail Audit` or `CTO Review` (if CTO was skipped, `Draft` is also valid). Then set it to `Detail Audit` — the status field must reflect where the pipeline actually is while you work.
 3. If Status is `Approved`, ask before re-reviewing
 4. Read the `## CTO Review` section — understand what strategic concerns were already addressed
 5. Read referenced files in spec (interfaces, existing code patterns):
@@ -63,7 +61,7 @@ Before reviewing, gather context:
 Each perspective runs as an **independent subagent**. They do not share context or influence
 each other — this is by design. Cross-perspective checks happen after all 5 complete.
 
-Launch all 5 in parallel using the Agent tool. Each subagent receives:
+Launch all 5 in parallel using the Agent tool, each with `model: "opus"` (audit judgment quality over speed — the spec is small, the stakes are the whole build). Each subagent receives:
 - The full spec file path
 - Its specific perspective reference file
 - Instructions to read the spec, apply its checklist, and return findings
@@ -76,7 +74,7 @@ For each perspective, launch a subagent with:
 You are a spec auditor reviewing from the [PERSPECTIVE] perspective.
 
 1. Read the spec file at: [SPEC_PATH]
-2. Read your reference checklist at: .claude/skills/spec-reviewer/references/[REFERENCE_FILE]
+2. Read your reference checklist at: ~/.claude/skills/spec-review/references/[REFERENCE_FILE]
 3. Read the codebase files referenced in the spec to verify patterns and conventions.
 4. Apply every challenge question from your checklist against the spec.
 5. For each question: note whether the spec addresses it, and if not, whether it's BLOCKING or a SUGGESTION.
@@ -173,8 +171,10 @@ Update the `## Review Notes` table in the spec:
 | Scope        | ✅ Approved / ❌ Issues Found | [summary or "—"]  |
 ```
 
+**Verdict mapping:** a perspective returning `⚠️ Suggestions Only` counts as approved — record it in the table as `✅ Approved` with the suggestions summarized in the Issues column. Only `❌ Blocking Issues` blocks.
+
 **Status update:**
-- If all ✅ → set `**Status:**` to `Approved`
+- If no perspective has blocking issues → set `**Status:**` to `Approved`
 - If any ❌ → set `**Status:**` to `Draft` (back to Architect for revision)
 
 ---

@@ -1,6 +1,6 @@
 ---
 name: spec-format
-description: "Spec contract format defining structure, lifecycle states, and validation rules for architecture specifications. Loaded by Architect (to produce specs), Builder (to implement against), and Reviewer (to validate against). Covers acceptance criteria, interfaces, error handling, scope guidelines, and review gates (CTO Review, Detail Audit)."
+description: "The spec contract: structure, lifecycle states (Draft → reviews → Approved), and validation rules. Shared by Architect (produces), Builder (implements against), and Reviewer (validates against)."
 user-invocable: false
 ---
 
@@ -37,6 +37,8 @@ The status appears at the top of every spec (see format below). The Architect up
 ## Spec Format (Strict Contract)
 
 Every specification MUST contain these sections. The Builder implements against them. The Reviewer validates against them.
+
+**N/A escape hatch (simple / fast-track specs):** a section may be filled with `_N/A — [reason]_` instead of content when it genuinely doesn't apply (e.g., Security Considerations on a log-message fix). The heading itself is never omitted — structure stays greppable. Never write filler to satisfy a heading; `N/A` with a reason beats invented content. Acceptance Criteria and Interfaces are exempt: a spec with no testable criteria or no defined contract is not a spec.
 
 ```markdown
 # [Feature Name]
@@ -150,7 +152,7 @@ The spec defines **what** and **why**. The Builder decides **how**. Do NOT inclu
 
 ## How Each Agent Uses This
 
-- **Architect:** Produces specs following this format exactly. All sections required. Writes function signatures and type definitions — never function bodies. If tempted to write pseudocode, convert it to an acceptance criterion instead. When finishing the spec, asks the user which reviews to run before advancing status.
+- **Architect:** Produces specs following this format exactly. All section headings required (`N/A — reason` allowed per the escape hatch above). Writes function signatures and type definitions — never function bodies. If tempted to write pseudocode, convert it to an acceptance criterion instead. When finishing the spec, asks the user which reviews to run before advancing status.
 - **CTO Review (`/cto-review`):** Reads the full spec. Writes strategic challenge findings into the `## CTO Review` section. Updates `Status` to `CTO Review` while active, back to `Draft` if RETHINK, or advances if PASS.
 - **Detail Audit (`/spec-review`):** Reads the full spec. Fills the `## Review Notes` table per perspective. Updates `Status` to `Detail Audit` while active, back to `Draft` if blocking issues, or to `Approved` if all pass.
 - **Builder:** First checks `Status` — if not `Approved`, stop and ask before doing anything. Then maps each section to implementation:

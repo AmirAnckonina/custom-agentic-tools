@@ -45,7 +45,7 @@ The user may reference work by short task ID, full branch name, or PR number. Se
 
 **Target branch resolution:**
 - **Reading a PR:** Extract base and head from `gh pr view` output.
-- **Creating a PR:** Default target is `develop`. If the user specifies a different target, use that instead. To honor the repo's declared default branch instead, read it via `gh repo view --json defaultBranchRef --jq .defaultBranchRef.name`.
+- **Creating a PR:** Default target is the repo's default branch — read it via `gh repo view --json defaultBranchRef --jq .defaultBranchRef.name` — unless the repo's `CLAUDE.md` declares a different trunk (e.g., `develop`) or the user specifies one.
 
 ### Freshness Rule
 

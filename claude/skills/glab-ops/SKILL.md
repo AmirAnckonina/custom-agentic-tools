@@ -1,7 +1,6 @@
 ---
 name: glab-ops
 description: "GitLab operations via the glab CLI — the official GitLab command-line tool. MR lifecycle (create, merge, approve, close, rebase), MR reading (view, diff, checkout), code review (discussions, comments, resolve/unresolve), CI/CD monitoring (pipeline status, job logs, lint), and git fallback when glab is unavailable. Only applies when the repo's remote is a GitLab host — does not apply to GitHub or other Git hosts (use gh-ops for those)."
-user-invocable: false
 ---
 
 ## GitLab Operations via glab CLI
@@ -30,7 +29,7 @@ The user may reference work by short task ID, full branch name, or MR number. Se
 
 **Target branch resolution:**
 - **Reading an MR:** Extract source and target from `glab mr view` output.
-- **Creating an MR:** Default target is `develop`. If the user specifies a different target, use that instead.
+- **Creating an MR:** Default target is the repo's default branch (`glab repo view` or `git symbolic-ref refs/remotes/origin/HEAD`), unless the repo's `CLAUDE.md` declares a different trunk (e.g., `develop`) or the user specifies one.
 
 ### Freshness Rule
 **Always work with the latest remote state.** Before reading any diff or file content:

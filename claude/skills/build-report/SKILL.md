@@ -1,6 +1,6 @@
 ---
 name: build-report
-description: "Standardized Build Report format for implementation agents. Outputs TL;DR, status, ASCII change tree with file tags and method-level detail, test results, and activity summary. Use when an agent completes implementation work and needs to report changes. Loaded by Builder and other implementation agents via frontmatter — not user-invocable."
+description: "Standardized Build Report output format. Use when an agent completes implementation work and reports changes. Preloaded by the Builder."
 user-invocable: false
 ---
 

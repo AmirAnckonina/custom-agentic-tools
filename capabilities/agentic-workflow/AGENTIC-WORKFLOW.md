@@ -8,9 +8,9 @@ The core workflow this stack is built around: a spec-driven **Architect → Buil
 |---|---|---|---|
 | `architect` | Agent | Opus | `@architect [task]` |
 | `cto-review` | Skill | Opus (conversation) | `/cto-review` (after Architect finishes) |
-| `spec-reviewer` | Skill | Opus subagents (5 parallel) | `/spec-review` (after CTO passes or is skipped) |
+| `spec-review` | Skill | Opus subagents (5 parallel) | `/spec-review` (after CTO passes or is skipped) |
 | `builder` | Agent | Sonnet | `@builder [spec path or task]` |
-| `reviewer-internal` | Agent | Sonnet | `@reviewer-internal` or `/review-internal` |
+| `reviewer` | Agent | Opus orchestrator + 6 Sonnet lens subagents | `@reviewer` or `/review-internal` |
 
 Shared skills: `spec-format` (the contract Architect writes against and Builder/reviewer read), `architect-methodology` (5 reasoning lenses + research protocol), `coding-standards` (13 quality standards), `build-report` (Builder's output format), `review-lenses` (the 6-lens review mechanism the reviewer agent uses).
 
@@ -75,22 +75,23 @@ Shared skills: `spec-format` (the contract Architect writes against and Builder/
                             │ implementation
                             ▼
                 ┌─────────────────────────┐
-                │  REVIEWER-INTERNAL      │
+                │  REVIEWER      │
                 │  Internal Code Reviewer │
-                │  Model: Sonnet          │
+                │  Model: Opus (parent)   │
+                │  + 6 Sonnet lenses      │
                 │  Pass 1: Mechanical     │
                 │  Pass 2: Quality        │
                 │  Skills: review-lenses, │
-                │  coding-standards,      │
-                │  gh-ops or glab-ops     │
+                │  coding-standards       │
                 └───────────┬─────────────┘
                             │
                   SHIP IT   │   NEEDS WORK / BLOCKER
                      │      │      │
                      ▼      │      ▼
-              commit/push   │   Builder fixes
-                            │      │
-                            └──────┘
+              terminal      │   Builder fixes
+              report        │      │
+              (git actions  │      │
+               on request)  └──────┘
 ```
 
 ## Iteration Loops
@@ -108,7 +109,7 @@ BLOCKING (Audit) ──→ Status: Draft ──→ Architect revises ──→ /
 
 ### Complex Task (new service, cross-system, multi-component)
 ```
-Architect (full process) → /cto-review → /spec-review → Builder → Reviewer-Internal
+Architect (full process) → /cto-review → /spec-review → Builder → Reviewer
 ```
 - Architect: Discovery → Research → Blueprint → Spec
 - CTO Review: mandatory
@@ -117,7 +118,7 @@ Architect (full process) → /cto-review → /spec-review → Builder → Review
 
 ### Medium Task (new endpoint, single component, bounded scope)
 ```
-Architect (fast track) → /spec-review → Builder → Reviewer-Internal
+Architect (fast track) → /spec-review → Builder → Reviewer
 ```
 - Architect: Blueprint → Spec (skip Discovery)
 - CTO Review: skipped (mark `_Skipped_` in spec)
@@ -126,7 +127,7 @@ Architect (fast track) → /spec-review → Builder → Reviewer-Internal
 
 ### Simple Task (bug fix, config change, typo-level)
 ```
-Architect (fast track) → Builder → Reviewer-Internal
+Architect (fast track) → Builder → Reviewer
 ```
 - Architect: minimal spec or inline task description
 - CTO Review: skipped
@@ -159,7 +160,7 @@ Both are populated by their respective skills and preserved across iterations.
 | **CTO Review** | Skill | Conversation (Opus) | `/cto-review` | Main conversation context |
 | **Spec Review** | Skill | Opus subagents | `/spec-review` | Main context + 5 parallel subagents |
 | **Builder** | Agent | Sonnet | `@builder` | Dedicated agent session |
-| **Reviewer-Internal** | Agent | Sonnet | `@reviewer-internal` or `/review-internal` | Dedicated agent session |
+| **Reviewer** | Agent | Opus + 6 Sonnet lens subagents | `@reviewer` or `/review-internal` | Dedicated agent session |
 
 **Why skills for spec reviews, not agents?**
 - Spec reviews are interactive — you may want to discuss findings inline
@@ -169,7 +170,7 @@ Both are populated by their respective skills and preserved across iterations.
 **Why an agent for code review, not a skill?**
 - Code review needs Bash (tests, lint, git commands)
 - Direct chat may be in a more constrained mode that can't run commands
-- Internal review (Sonnet) is mechanical/checklist-driven — fast and cheap
+- Internal review needs orchestration: an Opus parent runs the mechanical gate, then dispatches 6 Sonnet lenses in parallel (nested subagents, supported since Claude Code v2.1.172)
 
 ## Quick Reference — Commands
 
@@ -179,7 +180,7 @@ Both are populated by their respective skills and preserved across iterations.
 | Strategic spec challenge | `/cto-review` (after Architect finishes) |
 | Detail audit of spec | `/spec-review` (after CTO passes or is skipped) |
 | Implement the spec | `@builder [spec path or task]` |
-| Review pipeline code (internal) | `@reviewer-internal` or `/review-internal` |
+| Review pipeline code (internal) | `@reviewer` or `/review-internal` |
 
 ## Key Files
 
@@ -187,9 +188,9 @@ Both are populated by their respective skills and preserved across iterations.
 |---|---|
 | `claude/agents/architect.md` | Architect agent definition |
 | `claude/agents/builder.md` | Builder agent definition |
-| `claude/agents/reviewer-internal.md` | Internal code reviewer (Sonnet) — mechanical + quality |
+| `claude/agents/reviewer.md` | Internal code reviewer (Opus + Sonnet lenses) — mechanical + quality |
 | `claude/skills/cto-review/SKILL.md` | CTO Review skill |
-| `claude/skills/spec-reviewer/SKILL.md` | Detail Audit skill (5 perspectives) |
+| `claude/skills/spec-review/SKILL.md` | Detail Audit skill (5 perspectives) |
 | `claude/skills/spec-format/SKILL.md` | Spec format contract (shared by all) |
 | `claude/skills/architect-methodology/SKILL.md` | Architecture reasoning methodology |
 | `claude/skills/coding-standards/SKILL.md` | 13 coding quality standards |
@@ -199,7 +200,7 @@ Both are populated by their respective skills and preserved across iterations.
 
 ## Git-host dependency
 
-`reviewer-internal` needs a git-host skill to commit/push after a SHIP IT verdict — install `claude/skills/gh-ops` (GitHub) or `claude/skills/glab-ops` (GitLab) depending on your remote. Both can coexist; each checks the actual remote before acting.
+**Optional.** The reviewer's default deliverable is the terminal report — no git actions. If you want it to commit/push/open a PR-MR on request after a SHIP IT verdict, install `claude/skills/gh-ops` (GitHub) and/or `claude/skills/glab-ops` (GitLab); the reviewer loads the one matching the actual remote via the Skill tool, only when you explicitly ask. The core pipeline works without either.
 
 ## Setup
 
@@ -212,4 +213,4 @@ Then copy [templates/CLAUDE.md.template](../../templates/CLAUDE.md.template) int
 
 **Verify:** `@architect say hello` should load the architect persona and run its Step 0 (read CLAUDE.md, etc.). If it errors about a missing skill, re-run `./install.sh agentic-workflow`.
 
-`cto-review` and `spec-reviewer` are skills, not agents — they run in your main conversation, invoked via `/cto-review` and `/spec-review` once the architect's spec exists.
+`cto-review` and `spec-review` are skills, not agents — they run in your main conversation, invoked via `/cto-review` and `/spec-review` once the architect's spec exists.
