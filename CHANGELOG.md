@@ -1,6 +1,11 @@
-# Changelog — user-level-setup staged copy vs. `custom-agentic-tools` originals
+# Changelog — agentic-workflow user-level overhaul (branch `feat/user-level-agentic-workflow`)
 
-All changes made in this staged copy (2026-07-06), pending port back to the source repo at install time. Facts marked *(verified)* were checked against the live Claude Code docs (code.claude.com/docs), not assumed.
+All changes landed on this branch (2026-07-06), reviewed one artifact at a time. Facts marked *(verified)* were checked against the live Claude Code docs (code.claude.com/docs), not assumed. **Start with REVIEW-GUIDE.md** for reading order and rationale; this file is the per-file detail.
+
+## templates/CLAUDE.user.md (new — Amir's user-level rules)
+
+1. New file, symlinked as `~/.claude/CLAUDE.md`. Global rules only (loads in every session): communication style, planning-first, coding-standards pointer, agent-mode precedence, pipeline pointers.
+2. ADJUST placeholders resolved (Amir's picks): Go-primary stack defaults; **balanced direct-chat autonomy** (read/analyze freely, ask before edits/implementation); light git fallbacks (`feature/<short-desc>` + ticket prefix when available, what+why commits) — per-repo CLAUDE.md always overrides.
 
 ## Doc facts established during review *(verified)*
 
